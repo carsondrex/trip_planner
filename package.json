@@ -1,0 +1,23 @@
+{
+  "name": "empty-string",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/cs375-final-project/empty-string.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/cs375-final-project/empty-string/issues"
+  },
+  "homepage": "https://gitlab.com/cs375-final-project/empty-string#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

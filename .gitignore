@@ -1,0 +1,9 @@
+# Jetbrains Stuff
+.idea
+/shelf/
+/httpRequests/
+/dataSources/
+/dataSources.local.xml
+
+# Node Stuff
+node_modules
