@@ -5,7 +5,7 @@ stages:
 
 npm init:
     stage: Build
-    script: npm init
+    script: npm install
     artifacts:
         paths:
             - node_modules
