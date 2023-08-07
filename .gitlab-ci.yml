@@ -1,0 +1,11 @@
+image: node:latest
+
+stages:
+    - Build
+
+npm init:
+    stage: Build
+    script: npm init
+    artifacts:
+        paths:
+            - node_modules
