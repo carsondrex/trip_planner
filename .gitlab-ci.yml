@@ -1,11 +1,18 @@
 image: node:latest
 
 stages:
-    - Build
+    - Serve
 
-npm init:
-    stage: Build
+npm install:
+    stage: .pre
     script: npm install
     artifacts:
         paths:
             - node_modules
+
+node server.js:
+    stage: Serve
+    needs: [npm install]
+    script:
+        - node server.js
+        - curl "http://localhost:3000"
