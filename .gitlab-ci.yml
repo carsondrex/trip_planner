@@ -14,5 +14,5 @@ node server.js:
     stage: Serve
     needs: [npm install]
     script:
-        - node server.js
+        - npm run start
         - curl "http://localhost:3000"
