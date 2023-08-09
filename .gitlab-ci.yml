@@ -13,7 +13,7 @@ npm install:
 node --check:
     stage: Lint
     rules:
-        - if: $CI_PIPELINE_SOURCE == 'merge_request_evnt'
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     dependencies: [npm install]
     script: node --check server.js
     artifacts:
