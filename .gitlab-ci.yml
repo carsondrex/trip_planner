@@ -1,7 +1,7 @@
 image: node:latest
 
 stages:
-    - Serve
+    - Lint
 
 npm install:
     stage: .pre
@@ -10,9 +10,13 @@ npm install:
         paths:
             - node_modules
 
-node server.js:
-    stage: Serve
-    needs: [npm install]
-    script:
-        - npm run start
-        - curl "http://localhost:3000"
+node --check:
+    stage: Lint
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_evnt'
+    dependencies: [npm install]
+    script: node --check server.js
+    artifacts:
+        paths:
+            - node_modules
+# TODO: Actual lint, build, test, serve
