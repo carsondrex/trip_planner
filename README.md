@@ -16,5 +16,8 @@
 
 ## Authors:
 
-- TODO: Add more names
 - Ian White
+- Andrew Kigara
+- Praket Shah
+- Carson Ford
+- Alfredoni Saintclair
