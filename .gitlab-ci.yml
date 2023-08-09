@@ -14,6 +14,7 @@ node --check:
     stage: Lint
     rules:
         - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    needs: [npm install]
     dependencies: [npm install]
     script: node --check server.js
     artifacts:
