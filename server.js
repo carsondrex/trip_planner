@@ -62,6 +62,7 @@ app.get("/calendar", (req, res) => {
     } catch (error) {
         res.statusCode = 400;
         res.json({"error": error.message});
+        return
     }
 
     let startDayOfTheWeek = (startDay + monthChart[startMonth] + startYearCode + startDecade + Math.floor(startDecade / 4)) % 7
