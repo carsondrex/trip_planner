@@ -7,6 +7,11 @@
 
     <!-- Default stylesheet -->
     <link href="style.css" rel="stylesheet">
+    <style>
+        .withinDates {
+            background-color: blue;/*Color of trip days on calendar. Change color to match UI*/
+        }
+    </style>
 </head>
 
 <body>
@@ -64,6 +69,7 @@
                 else {
                     let month = convertMonth[body.start.month]
                     let totalDays = daysInMonth[body.start.month]
+                    let days = [body.start.day, body.end.day]
                     let leapYear = body.leapYear
                     //february on a leap year has an extra day
                     if (leapYear && month === 2) {
@@ -97,18 +103,28 @@
                                     day = document.createElement("td");
                                     if (j >= body.firstWeekDayOfMonth) {
                                         day.textContent = dayCount;
-                                        dayCount++;
                                         day.style.textAlign = "left"
                                         day.style.verticalAlign = "top"
+                                        if (dayCount <= days[1] && dayCount >= days[0]) {
+                                            day.setAttribute("class", "withinDates")
+                                        }
+                                        dayCount++;
+                                        //day.setAttribute("class", "withinDates")
                                     }
                                 }
                                 else if (i > 0) {
                                     day = document.createElement("td");
                                     if (dayCount <= totalDays) {
                                         day.textContent = dayCount;
-                                        dayCount++;
                                         day.style.textAlign = "left"
                                         day.style.verticalAlign = "top"
+                                        //day.setAttribute("class", "withinDates")
+                                        if (dayCount <= days[1] && dayCount >= days[0]) {
+                                            day.setAttribute("class", "withinDates")
+                                        }
+                                        dayCount++;
+
+                                        //dayCount++;
                                     }
                                     else {
                                         extraWeek = true;
