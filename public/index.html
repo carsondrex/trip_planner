@@ -12,5 +12,17 @@
         <p>
             Welcome to the empty-string project
         </p>
+        <button id="logout-button">Log Out</button>
+        <script>
+            document.getElementById("logout-button").addEventListener("click", async () => {
+                const response = await fetch("/logout", {
+                    method: "POST"
+                });
+
+                if (response.ok) {
+                    window.location.href = "/login.html";
+                }
+            });
+        </script>
     </body>
 </html>

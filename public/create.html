@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Account</title>
+</head>
+<body>
+<h1>Create Account</h1>
+<form id="create-form" action="/create" method="post"> <!-- Add the action attribute here -->
+    <input type="text" name="username" placeholder="Username" required><br>
+    <input type="password" name="password" placeholder="Password" required><br>
+    <button type="button" id="create-button">Create Account</button>
+</form>
+<script>
+    document.getElementById("create-button").addEventListener("click", async () => {
+        const form = document.getElementById("create-form");
+        const formData = new FormData(form);
+        const jsonData = {};
+
+        formData.forEach((value, key) => {
+            jsonData[key] = value;
+        });
+
+        const response = await fetch("/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(jsonData)
+        });
+
+        const result = await response.text();
+        alert(result);
+    });
+</script>
+</body>
+</html>
