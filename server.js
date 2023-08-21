@@ -12,6 +12,7 @@ const port = 3000;
 
 //functionality for date selection to calendar page
 let monthChart = {1: 0, 2: 3, 3: 3, 4: 6, 5: 1, 6: 4, 7: 6, 8: 2, 9: 5, 10: 0, 11: 3, 12: 5}
+let daysInMonth = { 1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31 }
 
 app.get("/calendar", (req, res) => {
     let startDate = req.query.start;
@@ -26,6 +27,7 @@ app.get("/calendar", (req, res) => {
     let startDecade = startDate.substring(8);
     let startYearCode;
 
+    //validation
     try {
         startMonth = parseInt(startMonth);
         startDay = parseInt(startDay);
@@ -35,18 +37,17 @@ app.get("/calendar", (req, res) => {
         endYear = parseInt(endYear);
         startDecade = parseInt(startDecade);
 
-        if (startYear !== endYear) {
+        if (!startDate || !endDate) {
+            throw new Error("Invalid Date(s).");
+        }
+        else if (startYear !== endYear) {
             throw new Error("Invalid Date. Year must be the same.");
         }
-        else {
-            if (startMonth !== endMonth) {
-                throw new Error("Invalid Date. Month must be the same.");
-            }
-            else {
-                if (startDay > endDay) {
-                    throw new Error("Invalid Date. End date should come after start date.");
-                }
-            }
+        else if (startMonth > endMonth || (endMonth === startMonth && startDay > endDay)){
+            throw new Error("Invalid Date. End date should come after start date.");
+        }
+        else if (startDay > daysInMonth[startMonth] || endDay > daysInMonth[endMonth]) {
+            throw new Error("Invalid Date.");
         }
         if (startMonth > 12 || startMonth < 1 || endMonth > 12 || endMonth < 1 || startDay > 31 || startDay < 1 || endDay > 31 || endDay < 1 || startYear > 2399 ||
             startYear < 1400 || endYear > 2399 || endYear < 1400) {
@@ -64,10 +65,12 @@ app.get("/calendar", (req, res) => {
         res.json({"error": error.message});
         return
     }
-
+    //calculates the day of the week of the start of the vacation and the first day of the month so that the calendar is accurate
     let startDayOfTheWeek = (startDay + monthChart[startMonth] + startYearCode + startDecade + Math.floor(startDecade / 4)) % 7
+    let firstDayStarter = (1 + startYearCode + startDecade + Math.floor(startDecade / 4));// + monthChart[month] in client
     let firstWeekDayOfMonth = (1 + monthChart[startMonth] + startYearCode + startDecade + Math.floor(startDecade / 4)) % 7
 
+    //leap years have an extra day in february, so we'll send a json key if it is a leap year
     let leapYear = false;
     if (startYear % 4 === 0) {
         startDayOfTheWeek = startDayOfTheWeek - 1
@@ -87,7 +90,8 @@ app.get("/calendar", (req, res) => {
         "day": endDay,
     },
     "year": startYear,
-    "leapYear": leapYear});
+    "leapYear": leapYear,
+    "firstDayStarter": firstDayStarter});
 });
 
 // Start server

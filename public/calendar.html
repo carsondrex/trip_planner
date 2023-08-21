@@ -8,8 +8,24 @@
     <!-- Default stylesheet -->
     <link href="style.css" rel="stylesheet">
     <style>
+        table, th, td {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+        th {
+            height: 30px;
+        }
+        td {
+            height: 120px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th, td {
+            width: 150px;
+        }
         .withinDates {
-            background-color: blue;/*Color of trip days on calendar. Change color to match UI*/
+            background-color: lightblue;
+            /*Color of trip days on calendar. TODO: pull style.css*/
         }
     </style>
 </head>
@@ -30,6 +46,9 @@
         <table id="table">
             <tbody id="calendar"></tbody>
         </table>
+
+        <br/>
+        <br/>
     </div>
 
     <script>
@@ -67,6 +86,7 @@
                     errorMessage.textContent = body.error;
                 }
                 else {
+                    let monthChart = {1: 0, 2: 3, 3: 3, 4: 6, 5: 1, 6: 4, 7: 6, 8: 2, 9: 5, 10: 0, 11: 3, 12: 5}
                     let month = convertMonth[body.start.month]
                     let totalDays = daysInMonth[body.start.month]
                     let days = [body.start.day, body.end.day]
@@ -76,10 +96,9 @@
                         totalDays += 1
                     }
                     let extraWeek = false;
-                    document.getElementById("tableHeader").textContent = month + " " + body.year;
                     let calendar = document.getElementById("calendar");
-                    let table = document.getElementById("table");
 
+                    //clearing calendar on each submission
                     let toDelete = document.getElementsByClassName("deleteWeek")
                     while (toDelete[0]) {
                         toDelete[0].parentNode.removeChild(toDelete[0])
@@ -89,62 +108,114 @@
                     table.style.height = "500px";
                     table.style.marginLeft = "auto";
                     table.style.marginRight = "auto";
-                    table.style.border = "2px solid black";
-                    table.style.borderCollapse = "collapse";
-                    let dayCount = 1
-                    for (let i = 0; i < 7; i++) {
-                        if (!extraWeek) {
+                    //make a calendar for each month within range
+                    let monthCount = 1;
+                    if (body.end.month !== body.start.month) {
+                        monthCount = body.end.month - body.start.month + 1;
+                    }
+                    let currWeekDay = body.firstWeekDayOfMonth;
+                    /*m = month, i = week, j = day*/
+                    for (let m = 0; m < monthCount; m++) {
+                        let month = convertMonth[body.start.month + m]
+                        extraWeek = false;
+                        if (m > 0) {
+                            totalDays = daysInMonth[body.start.month + m]
+                        }
+                        
+                        let dayCount = 1;
+                        for (let i = 0; i < 8; i++) {
                             let week = document.createElement("tr");
-                            week.style.border = "2px solid black"
-                            week.style.borderCollapse = "collapse"
+                            let day;
+                            if (i === 0) {
+                                    day = document.createElement("th");
+                                    month = convertMonth[body.start.month + m]
+                                    day.textContent = month + " " + body.year
+                                    day.colSpan = 7;
+                                    week.appendChild(day)
+                            }
                             for (let j = 0; j < 7; j++) {
-                                let day;
                                 if (i === 1) {
-                                    day = document.createElement("td");
-                                    if (j >= body.firstWeekDayOfMonth) {
-                                        day.textContent = dayCount;
-                                        day.style.textAlign = "left"
-                                        day.style.verticalAlign = "top"
-                                        if (dayCount <= days[1] && dayCount >= days[0]) {
-                                            day.setAttribute("class", "withinDates")
-                                        }
-                                        dayCount++;
-                                        //day.setAttribute("class", "withinDates")
-                                    }
-                                }
-                                else if (i > 0) {
-                                    day = document.createElement("td");
-                                    if (dayCount <= totalDays) {
-                                        day.textContent = dayCount;
-                                        day.style.textAlign = "left"
-                                        day.style.verticalAlign = "top"
-                                        //day.setAttribute("class", "withinDates")
-                                        if (dayCount <= days[1] && dayCount >= days[0]) {
-                                            day.setAttribute("class", "withinDates")
-                                        }
-                                        dayCount++;
-
-                                        //dayCount++;
-                                    }
-                                    else {
-                                        extraWeek = true;
-                                    }
-                                }
-                                else {
                                     day = document.createElement("th");
                                     let dayOfTheWeek = convertDayOfTheWeek[j];
                                     day.textContent = dayOfTheWeek;
-                                    day.style.height = "30px"
                                 }
-                                day.style.width = "150px"
-                                day.style.border = "2px solid black"
-                                day.style.borderCollapse = "collapse"
-                                week.appendChild(day)
+                                else {
+                                    if (!extraWeek) {
+                                        if (i > 1) {
+                                            //if first week (making sure week starts on correct week day)
+                                            if (i === 2) {
+                                                day = document.createElement("td");
+                                                if (j >= currWeekDay) {
+                                                    day.textContent = dayCount;
+                                                    if (monthCount > 1) {
+                                                        if ((m === (monthCount - 1) && dayCount <= days[1])) {
+                                                            day.setAttribute("class", "withinDates")
+                                                        }
+                                                        if (m === 0 && dayCount >= days[0]) {
+                                                            day.setAttribute("class", "withinDates")
+                                                        }
+                                                        if (m > 0 && m < (monthCount - 1)) {
+                                                            day.setAttribute("class", "withinDates")
+                                                        }
+                                                    }
+                                                    else if (monthCount === 1) {
+                                                        if (m === 0 && dayCount >= days[0] && dayCount <= days[1]) {
+                                                            day.setAttribute("class", "withinDates")
+                                                        }
+                                                    }
+                                                    dayCount++;
+                                                    currWeekDay++;
+                                                }
+                                                else {
+                                                    day.style.border = "0px"
+                                                }
+                                            }
+                                            //all other weeks
+                                            else {
+                                                console.log(dayCount + " " + totalDays)
+                                                if (dayCount <= totalDays) {
+                                                    day = document.createElement("td");
+                                                    day.textContent = dayCount;
+                                                    if (monthCount > 1) {
+                                                        if ((m === (monthCount - 1) && dayCount <= days[1])) {
+                                                            day.setAttribute("class", "withinDates")
+                                                        }
+                                                        if (m === 0 && dayCount >= days[0]) {
+                                                            day.setAttribute("class", "withinDates")
+                                                        }
+                                                        if (m > 0 && m < (monthCount - 1)) {
+                                                            day.setAttribute("class", "withinDates")
+                                                        }
+                                                    }
+                                                    else if (monthCount === 1) {
+                                                        if (m === 0 && dayCount >= days[0] && dayCount <= days[1]) {
+                                                            day.setAttribute("class", "withinDates")
+                                                        }
+                                                    }
+                                                     
+                                                    dayCount++;
+                                                    currWeekDay++;
+                                                }
+                                                else {
+                                                    extraWeek = true;
+                                                }
+                                            }
+
+                                        }
+                                        if (currWeekDay === 7) {
+                                            currWeekDay = 0;
+                                        }
+                                    }
+                                }
+                                if (day) {
+                                    week.appendChild(day)
+                                }
                             }
                             week.setAttribute("class", "deleteWeek")
                             calendar.appendChild(week)
                         }
                     }
+
                 }
             })
         });
