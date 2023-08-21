@@ -15,7 +15,8 @@ $('.mdc-deprecated-list-item').on('click', (evt) => {
             content.html('<h1>Explore</h1>');
             break;
         case 'destination-calendar':
-            content.html('<h1>Calendar</h1>');
+            // TODO: Causing an error: "Identifier 'button' has already been declared"
+            content.load('/calendar.html');
             break;
         case 'destination-budget':
             content.html('<h1>Budget</h1>');
