@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Empty-String Calendar</title>
+
+    <!-- Default stylesheet -->
+    <link href="style.css" rel="stylesheet">
+    <style>
+        table,
+        th,
+        td {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+
+        th {
+            height: 30px;
+        }
+
+        td {
+            height: 120px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th,
+        td {
+            width: 150px;
+        }
+
+        .withinDates {
+            background-color: lightblue;
+            /*Color of trip days on calendar. TODO: pull style.css*/
+        }
+
+        h1 {
+            text-align: center;
+            font-family: Tahoma, Arial, sans-serif;
+            color: #a006d8;
+            margin: 80px 0;
+        }
+
+        .withinDates:hover {
+            background: #0642d8;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            transition: opacity 500ms;
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        .overlay:target {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .popup {
+            margin: 70px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            width: 98%;
+            top: 40%;
+            height: 60%;
+            position: relative;
+            transition: all 1s ease-in-out;
+        }
+
+        .popup h2 {
+            margin-top: 0;
+            color: #333;
+            font-family: Tahoma, Arial, sans-serif;
+        }
+
+        .popup .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            transition: all 100ms;
+            font-size: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .popup .close:hover {
+            color: #0c060f;
+        }
+
+        .popup .content {
+            max-height: 30%;
+            overflow: auto;
+        }
+
+        @media screen and (max-width: 700px) {
+            .box {
+                width: 70%;
+            }
+
+            .popup {
+                width: 70%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <label for="startDate">Start Date:</label>
+        <input id="startDate" type="text" placeholder="MM/DD/YYYY" />
+        <label for="endDate">End Date:</label>
+        <input id="endDate" type="text" placeholder="MM/DD/YYYY" />
+    </div>
+
+    <button id="send">Enter</button>
+    <div id="errorMessage"></div>
+
+    <div>
+        <h3 id="tableHeader" style="text-align: center"></h3>
+        <table id="table">
+            <tbody id="calendar"></tbody>
+        </table>
+
+        <div id="popup1" class="overlay">
+            <div class="popup">
+                <h2>Here i am</h2>
+                <a class="close" href="#">&times;</a>
+                <div class="content">
+                    Enter event data here
+                </div>
+            </div>
+        </div>
+
+        <br />
+        <br />
+    </div>
+
+    <script>
+        let button = document.getElementById("send");
+        let errorMessage = document.getElementById("errorMessage");
+        let convertMonth = {
+            1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August",
+            9: "September", 10: "October", 11: "November", 12: "December"
+        }
+        let convertDayOfTheWeek = { 0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday" }
+        let daysInMonth = { 1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31 }
+
+        button.addEventListener("click", () => {
+            let startDateInput = document.getElementById("startDate").value;
+            let endDateInput = document.getElementById("endDate").value;
+            if (startDateInput[2] != "/") {
+                startDateInput = "0" + startDateInput
+            }
+            if (startDateInput[5] != "/") {
+                startDateInput = startDateInput.substring(0, 3) + "0" + startDateInput.substring(3)
+            }
+            if (endDateInput[2] != "/") {
+                endDateInput = "0" + endDateInput
+            }
+            if (endDateInput[5] != "/") {
+                endDateInput = endDateInput.substring(0, 3) + "0" + endDateInput.substring(3)
+            }
+            errorMessage.textContent = ""
+            let url = `/calendar?start=${startDateInput}&end=${endDateInput}`
+
+            fetch(url).then((response) => {
+                return response.json();
+            }).then((body) => {
+                if (body.error) {
+                    errorMessage.textContent = body.error;
+                }
+                else {
+                    let monthChart = { 1: 0, 2: 3, 3: 3, 4: 6, 5: 1, 6: 4, 7: 6, 8: 2, 9: 5, 10: 0, 11: 3, 12: 5 }
+                    let month = convertMonth[body.start.month]
+                    let totalDays = daysInMonth[body.start.month]
+                    let days = [body.start.day, body.end.day]
+                    let leapYear = body.leapYear
+                    //february on a leap year has an extra day
+                    if (leapYear && month === 2) {
+                        totalDays += 1
+                    }
+                    let extraWeek = false;
+                    let calendar = document.getElementById("calendar");
+
+                    //clearing calendar on each submission
+                    let toDelete = document.getElementsByClassName("deleteWeek")
+                    while (toDelete[0]) {
+                        toDelete[0].parentNode.removeChild(toDelete[0])
+                    }
+
+                    table.style.width = "1050px";
+                    table.style.height = "500px";
+                    table.style.marginLeft = "auto";
+                    table.style.marginRight = "auto";
+                    //make a calendar for each month within range
+                    let monthCount = 1;
+                    if (body.end.month !== body.start.month) {
+                        monthCount = body.end.month - body.start.month + 1;
+                    }
+                    let currWeekDay = body.firstWeekDayOfMonth;
+                    /*m = month, i = week, j = day*/
+                    for (let m = 0; m < monthCount; m++) {
+                        let month = convertMonth[body.start.month + m]
+                        extraWeek = false;
+                        if (m > 0) {
+                            totalDays = daysInMonth[body.start.month + m]
+                        }
+
+                        let dayCount = 1;
+                        for (let i = 0; i < 8; i++) {
+                            let week = document.createElement("tr");
+                            let day;
+                            if (i === 0) {
+                                day = document.createElement("th");
+                                month = convertMonth[body.start.month + m]
+                                day.textContent = month + " " + body.year
+                                day.colSpan = 7;
+                                week.appendChild(day)
+                            }
+                            for (let j = 0; j < 7; j++) {
+                                if (i === 1) {
+                                    day = document.createElement("th");
+                                    let dayOfTheWeek = convertDayOfTheWeek[j];
+                                    day.textContent = dayOfTheWeek;
+                                }
+                                else {
+                                    if (!extraWeek) {
+                                        if (i > 1) {
+                                            //if first week (making sure week starts on correct week day)
+                                            if (i === 2) {
+                                                day = document.createElement("td");
+                                                if (j >= currWeekDay) {
+                                                    day.textContent = dayCount;
+                                                    //conditions for day to be colored in
+                                                    if (monthCount > 1) {
+                                                        if ((m === (monthCount - 1) && dayCount <= days[1])) {
+                                                            day.setAttribute("class", "withinDates")
+                                                            day.setAttribute("onclick", "location.href='#popup1';")
+                                                        }
+                                                        if (m === 0 && dayCount >= days[0]) {
+                                                            day.setAttribute("class", "withinDates")
+                                                            day.setAttribute("onclick", "location.href='#popup1';")
+                                                        }
+                                                        if (m > 0 && m < (monthCount - 1)) {
+                                                            day.setAttribute("class", "withinDates")
+                                                            day.setAttribute("onclick", "location.href='#popup1';")
+                                                        }
+                                                    }
+                                                    else if (monthCount === 1) {
+                                                        if (m === 0 && dayCount >= days[0] && dayCount <= days[1]) {
+                                                            day.setAttribute("class", "withinDates")
+                                                            day.setAttribute("onclick", "location.href='#popup1';")
+                                                        }
+                                                    }
+                                                    dayCount++;
+                                                    currWeekDay++;
+                                                }
+                                                else {
+                                                    day.style.border = "0px"
+                                                }
+                                            }
+                                            //all other weeks
+                                            else {
+                                                if (dayCount <= totalDays) {
+                                                    day = document.createElement("td");
+                                                    day.textContent = dayCount;
+                                                    //conditions for day to be colored in
+                                                    if (monthCount > 1) {
+                                                        if ((m === (monthCount - 1) && dayCount <= days[1])) {
+                                                            day.setAttribute("class", "withinDates")
+                                                            day.setAttribute("onclick", "location.href='#popup1';")
+                                                        }
+                                                        if (m === 0 && dayCount >= days[0]) {
+                                                            day.setAttribute("class", "withinDates")
+                                                            day.setAttribute("onclick", "location.href='#popup1';")
+                                                        }
+                                                        if (m > 0 && m < (monthCount - 1)) {
+                                                            day.setAttribute("class", "withinDates")
+                                                            day.setAttribute("onclick", "location.href='#popup1';")
+                                                        }
+                                                    }
+                                                    else if (monthCount === 1) {
+                                                        if (m === 0 && dayCount >= days[0] && dayCount <= days[1]) {
+                                                            day.setAttribute("class", "withinDates")
+                                                            day.setAttribute("onclick", "location.href='#popup1';")
+                                                        }
+                                                    }
+                                                    dayCount++;
+                                                    currWeekDay++;
+                                                }
+                                                else {
+                                                    extraWeek = true;
+                                                }
+                                            }
+                                        }
+                                        if (currWeekDay === 7) {
+                                            currWeekDay = 0;
+                                        }
+                                    }
+                                }
+                                if (day) {
+                                    week.appendChild(day)
+                                }
+                            }
+                            week.setAttribute("class", "deleteWeek")
+                            calendar.appendChild(week)
+                        }
+                    }
+
+                }
+            })
+        });
+
+    </script>
+</body>
+
+</html>

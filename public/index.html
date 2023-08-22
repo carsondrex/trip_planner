@@ -4,25 +4,79 @@
         <meta charset="UTF-8">
         <title>empty-string</title>
 
-        <!-- Default stylesheet -->
-        <link href="style.css" rel="stylesheet">
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <p>
-            Welcome to the empty-string project
-        </p>
-        <button id="logout-button">Log Out</button>
-        <script>
-            document.getElementById("logout-button").addEventListener("click", async () => {
-                const response = await fetch("/logout", {
-                    method: "POST"
-                });
+        <link href="style.css" rel="stylesheet"/>
 
-                if (response.ok) {
-                    window.location.href = "/login.html";
-                }
-            });
-        </script>
+        <!-- Material Web Styles -->
+        <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+              rel="stylesheet">
+
+        <!-- Material Symbols -->
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+              rel="stylesheet"/>
+
+        <!-- Material Web JS Library -->
+        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
+        <!-- jQuery -->
+        <script crossorigin="anonymous"
+                integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+                src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    </head>
+    <body style="display: flex">
+
+        <!-- Drawer -->
+        <aside class="mdc-drawer" style="height: 100vh">
+
+            <!-- Drawer: Header -->
+            <div class="mdc-drawer__header">
+                <h3 class="mdc-drawer__title">Brian Stuart</h3>
+                <h6 class="mdc-drawer__subtitle">bls96@drexel.edu</h6>
+            </div>
+
+            <!-- Drawer: Content -->
+            <div class="mdc-drawer__content">
+
+                <!-- Drawer Destinations -->
+                <nav class="mdc-deprecated-list">
+
+                    <!-- Destination: My Trip -->
+                    <a aria-current="page" class="mdc-deprecated-list-item mdc-deprecated-list-item--activated" href="#"
+                       id="destination-my-trip">
+                        <span class="mdc-deprecated-list-item__ripple"></span>
+                        <i aria-hidden="true" class="material-symbols-outlined mdc-deprecated-list-item__graphic">luggage</i>
+                        <span class="mdc-deprecated-list-item__text">My Trip</span>
+                    </a>
+
+                    <!-- Destination: Explore -->
+                    <a class="mdc-deprecated-list-item" href="#" id="destination-explore">
+                        <span class="mdc-deprecated-list-item__ripple"></span>
+                        <i aria-hidden="true" class="material-symbols-outlined mdc-deprecated-list-item__graphic">explore</i>
+                        <span class="mdc-deprecated-list-item__text">Explore</span>
+                    </a>
+
+                    <!-- Destination: Calendar -->
+                    <a class="mdc-deprecated-list-item" href="#" id="destination-calendar">
+                        <span class="mdc-deprecated-list-item__ripple"></span>
+                        <i aria-hidden="true"
+                           class="material-symbols-outlined mdc-deprecated-list-item__graphic">event</i>
+                        <span class="mdc-deprecated-list-item__text">Calendar</span>
+                    </a>
+
+                    <!-- Destination: Budget -->
+                    <a class="mdc-deprecated-list-item" href="#" id="destination-budget">
+                        <span class="mdc-deprecated-list-item__ripple"></span>
+                        <i aria-hidden="true"
+                           class="material-symbols-outlined mdc-deprecated-list-item__graphic">attach_money</i>
+                        <span class="mdc-deprecated-list-item__text">Budget</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content of Page -->
+        <div id="content"><h1>My Trip</h1></div>
+
+        <!-- Main Script -->
+        <script src="index.js"></script>
     </body>
 </html>

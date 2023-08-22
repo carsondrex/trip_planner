@@ -1,6 +1,10 @@
 # empty-string
 
-## A travel itinerary website
+### A travel itinerary website
+
+## Running the Project
+1. `npm start`
+2. Go to [http://localhost:3000/](http://localhost:3000/)
 
 ## Project Contract:
 
@@ -16,6 +20,8 @@
 
 ## Authors:
 
-- TODO: Add more names
 - Ian White
-
+- Andrew Kigara
+- Praket Shah
+- Carson Ford
+- Alfredoni Saintclair
