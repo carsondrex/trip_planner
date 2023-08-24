@@ -1,0 +1,36 @@
+.username,
+.password {
+    width: 300px;
+}
+
+.mdc-text-field-container {
+    display: block;
+    margin: 8px auto;
+    width: 300px;
+}
+
+.mdc-button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin: auto;
+    width: 300px;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+}
+
+.divider::before, .divider::after {
+    flex: 1;
+    content: '';
+    padding: 1px;
+    background-color: #CDCDCD;
+    margin: 5px;
+}
+
+.mdc-card {
+    width: 400px;
+    margin: 5% auto;
+    padding: 32px;
+}
