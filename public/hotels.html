@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Empty-String Hotels</title>
+
+    <link href="style.css" rel="stylesheet" />
+    <style>
+        .deleteDiv {
+            height: 300px;
+            width: 300px;
+            border: thin solid #000000;
+            float: left;
+        }
+
+        .hotelNames {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .hotelPrices {
+            font-size: 15px;
+        }
+
+        p {
+            margin-top: 0px;
+            margin-bottom: 2px;
+        }
+
+        .hotelImages {
+            max-height: 150px;
+            max-width: 275px;
+            object-fit: contain;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <label for="locationBox">Trip Location:</label>
+        <input id="locationBox" type="text" placeholder="Philadelphia" />
+        <button id="enter">Enter</button>
+    </div>
+
+    <div id="errorMessage"></div>
+
+    <br />
+    <div id="hotelBox" style="overflow:hidden"></div>
+    <br />
+
+    <script>
+        let locationBox = document.getElementById("locationBox");
+        let hotelsButton = document.getElementById("enter");
+        let hotelErrorMessage = document.getElementById("errorMessage");
+        let hotelBox = document.getElementById("hotelBox");
+
+        hotelsButton.addEventListener("click", () => {
+            hotelErrorMessage.textContent = "Fetching content..."
+            let location = locationBox.value;
+            let url = `/hotels?location=${location}`
+
+            fetch(url).then((response) => {
+                return response.json();
+            }).then((body) => {
+                console.log(body)
+                if (!body.error) {
+                    hotelErrorMessage.textContent = "";
+                    let toDelete = document.getElementsByClassName("deleteDiv")
+                    while (toDelete[0]) {
+                        toDelete[0].parentNode.removeChild(toDelete[0])
+                    }
+                    let properties = body.data.propertySearch.properties
+                    let n = properties.length
+                    if (n > 20) {
+                        n = 20;
+                    }
+                    for (let i = 0; i < n; i++) {
+                        let div = document.createElement('div');
+                        let imgBox = document.createElement('div')
+                        let hotelName = document.createElement('p')
+                        hotelName.setAttribute("class", "hotelNames")
+                        let hotelPrice = document.createElement('p')
+                        hotelPrice.setAttribute("class", "hotelPrices")
+                        let hotelImg = document.createElement('img')
+                        hotelImg.setAttribute("class", "hotelImages")
+
+                        hotelName.textContent = properties[i].name
+                        hotelPrice.textContent = properties[i].price.displayMessages[0].lineItems[0].price.formatted + "/night"
+                        hotelImg.src = properties[i].propertyImage.image.url
+
+                        imgBox.appendChild(hotelImg)
+                        div.appendChild(hotelName)
+                        div.appendChild(hotelPrice)
+                        div.appendChild(imgBox)
+                        div.setAttribute("class", "deleteDiv")
+                        hotelBox.appendChild(div)
+                    }
+                }
+                else {
+                    hotelErrorMessage.textContent = body.error;
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
