@@ -177,7 +177,7 @@ app.post("/login", async (req, res) => {
     }
 
     if (result.rows.length === 0) {
-        return res.status(400).send("Username not found\n");
+        return res.status(401).send("Username not found\n");
     }
 
     const hash = result .rows[0].password;
@@ -192,7 +192,7 @@ app.post("/login", async (req, res) => {
 
     if (!verifyResult) {
         console.log("Credentials didn't match");
-        return res.status(400).send("Invalid credentials\n");
+        return res.status(402).send("Invalid credentials\n");
     }
 
     const token = makeToken();
