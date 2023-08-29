@@ -304,9 +304,6 @@ app.get("/hotels", async (req, res) => {
             console.log(response.data);
             let objs = response.data.sr;
             let region = "";
-            console.log(globalStartDay)
-            console.log(globalStartMonth)
-            console.log(globalYear)
             for (let i = 0; i < objs.length; i++) {
                 if (objs[i].type == "CITY") {
                     region = objs[i].gaiaId;
@@ -346,7 +343,7 @@ app.get("/hotels", async (req, res) => {
                             resultsSize: 200,
                             sort: 'PRICE_LOW_TO_HIGH',
                             filters: {
-                                price: { max: 150, min: 100 }
+                                price: { max: 250, min: 100 }
                             }
                         }
                     };
@@ -355,6 +352,7 @@ app.get("/hotels", async (req, res) => {
             }
             //get details about each hotel in area
             try {
+                console.log("REGION ID: " + region)
                 let response2 = await axios.request(options);
                 res.send(response2.data)
             } catch (error) {

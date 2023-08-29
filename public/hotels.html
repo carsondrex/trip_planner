@@ -55,10 +55,10 @@
     <br />
 
     <script>
-        let locationBox = document.getElementById("locationBox");
-        let hotelsButton = document.getElementById("enter");
-        let hotelErrorMessage = document.getElementById("errorMessage");
-        let hotelBox = document.getElementById("hotelBox");
+        var locationBox = document.getElementById("locationBox");
+        var hotelsButton = document.getElementById("enter");
+        var hotelErrorMessage = document.getElementById("errorMessage");
+        var hotelBox = document.getElementById("hotelBox");
 
         hotelsButton.addEventListener("click", () => {
             hotelErrorMessage.textContent = "Fetching content..."
@@ -69,12 +69,13 @@
                 return response.json();
             }).then((body) => {
                 console.log(body)
+                let toDelete = document.getElementsByClassName("deleteDiv")
+                while (toDelete[0]) {
+                    toDelete[0].parentNode.removeChild(toDelete[0])
+                }
                 if (!body.error) {
                     hotelErrorMessage.textContent = "";
-                    let toDelete = document.getElementsByClassName("deleteDiv")
-                    while (toDelete[0]) {
-                        toDelete[0].parentNode.removeChild(toDelete[0])
-                    }
+                    
                     let properties = body.data.propertySearch.properties
                     let n = properties.length
                     if (n > 20) {
@@ -92,7 +93,10 @@
 
                         hotelName.textContent = properties[i].name
                         hotelPrice.textContent = properties[i].price.displayMessages[0].lineItems[0].price.formatted + "/night"
-                        hotelImg.src = properties[i].propertyImage.image.url
+                        if (properties[i].propertyImage.image.url) {
+                            hotelImg.src = properties[i].propertyImage.image.url
+                        }
+                        hotelImg.alt = "Hotel Image"
 
                         imgBox.appendChild(hotelImg)
                         div.appendChild(hotelName)

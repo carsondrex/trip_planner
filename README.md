@@ -25,3 +25,6 @@
 - Praket Shah
 - Carson Ford
 - Alfredoni Saintclair
+
+## Hotels API
+- 500 uses for the month. Currently ~65% used.
