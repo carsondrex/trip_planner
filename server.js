@@ -3,6 +3,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
 const argon2 = require("argon2");
+const axios = require("axios");
 
 // Create express app with static handler
 const app = express();
