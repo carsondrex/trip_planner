@@ -1,42 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<body>
-<h1>Login</h1>
-<form id="login-form" action="/login" method="post">
-    <input type="text" name="username" placeholder="Username" required><br>
-    <input type="password" name="password" placeholder="Password" required><br>
-    <button type="button" id="login-button">Login</button>
-</form>
-<script>
-    document.getElementById("login-button").addEventListener("click", async () => {
-        const form = document.getElementById("login-form");
-        const formData = new FormData(form);
-        const jsonData = {};
+    <head>
+        <meta charset="UTF-8">
+        <title>Login - empty-string</title>
 
-        formData.forEach((value, key) => {
-            jsonData[key] = value;
-        });
+        <link href="login.css" rel="stylesheet"/>
 
-        const response = await fetch("/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(jsonData)
-        });
+        <!-- Material Web Styles -->
+        <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+              rel="stylesheet">
 
-        const result = await response.text();
-        alert(result);
+        <!-- Material Web JS Library -->
+        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 
-        if (response.ok) {
-            window.location.href = "/"
-        }
-    });
-</script>
-<a href="http://localhost:3000/create.html">Don't have an account? Create an account</a>
-</body>
+        <!-- jQuery -->
+        <script crossorigin="anonymous"
+                integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+                src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    </head>
+    <body>
+
+        <!-- Card Background -->
+        <div class="mdc-card">
+            <!-- Header -->
+            <h1 style="text-align: center">empty-string</h1>
+
+            <!-- Login Label -->
+            <p style="width: 300px; margin: auto; justify-content: center; text-align: start;"><strong>Log in</strong>
+            </p>
+
+            <!-- Username TextField -->
+            <div class="mdc-text-field-container">
+                <label class="mdc-text-field mdc-text-field--outlined username">
+                    <span class="mdc-notched-outline">
+                        <span class="mdc-notched-outline__leading"></span>
+                        <span class="mdc-notched-outline__notch">
+                            <span class="mdc-floating-label" id="login-username-label">Username</span>
+                        </span>
+                        <span class="mdc-notched-outline__trailing"></span>
+                    </span>
+                    <input aria-controls="login-username-helper-text" aria-describedby="login-username-helper-text"
+                           aria-labelledby="login-username-label"
+                           class="mdc-text-field__input"
+                           name="username"
+                           required
+                           type="email">
+                </label>
+
+                <!-- Helper Text -->
+                <div class="mdc-text-field-helper-line">
+                    <div aria-hidden="true" class="mdc-text-field-helper-text" id="login-username-helper-text"
+                         style="color: #B00020"></div>
+                </div>
+            </div>
+
+            <!-- Password TextField -->
+            <div class="mdc-text-field-container">
+                <label class="mdc-text-field mdc-text-field--outlined password">
+                    <span class="mdc-notched-outline">
+                        <span class="mdc-notched-outline__leading"></span>
+                        <span class="mdc-notched-outline__notch">
+                            <span class="mdc-floating-label" id="login-password-label">Password</span>
+                        </span>
+                        <span class="mdc-notched-outline__trailing"></span>
+                    </span>
+                    <input aria-controls="login-password-helper-text" aria-describedby="login-password-helper-text"
+                           aria-labelledby="login-password-label" class="mdc-text-field__input" minlength="6"
+                           name="password" required type="password">
+                </label>
+
+                <!-- Helper Text -->
+                <div class="mdc-text-field-helper-line">
+                    <div aria-hidden="true" class="mdc-text-field-helper-text--validation-msg"
+                         id="login-password-helper-text"
+                         style="color: #B00020"></div>
+                </div>
+            </div>
+
+            <!-- Login Button -->
+            <div class="mdc-button-container">
+                <button class="mdc-button mdc-button--raised" id="login-button">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__focus-ring"></span>
+                    <span class="mdc-button__label">Log in</span>
+                </button>
+            </div>
+
+            <!-- Divider -->
+            <div class="divider" style="width: 300px; margin: 10px auto">OR</div>
+
+            <!-- Create Account Button -->
+            <div class="mdc-button-container" style="justify-content: center">
+                <button class="mdc-button mdc-button--raised" style="width: 100%">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__focus-ring"></span>
+                    <span class="mdc-button__label">Create Account</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- login script -->
+        <script src="login.js"></script>
+    </body>
 </html>

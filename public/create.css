@@ -1,0 +1,20 @@
+.username,
+.password {
+    width: 300px;
+}
+
+.mdc-text-field-container {
+    display: block;
+    margin: 8px auto;
+    width: 300px;
+}
+
+.mdc-button-container {
+    margin: 8px auto;
+}
+
+.mdc-card {
+    width: 400px;
+    margin: 5% auto;
+    padding: 32px;
+}
