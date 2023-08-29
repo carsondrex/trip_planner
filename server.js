@@ -3,6 +3,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
 const argon2 = require("argon2");
+const axios = require("axios");
 
 // Create express app with static handler
 const app = express();
@@ -11,13 +12,22 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(cookieParser());
 
+//api usage
+let keysFile = require("./keys.json");
+
 // Host configuration (currently local)
 const hostname = "localhost";
 const port = 3000;
 
 //functionality for date selection to calendar page
-let monthChart = {1: 0, 2: 3, 3: 3, 4: 6, 5: 1, 6: 4, 7: 6, 8: 2, 9: 5, 10: 0, 11: 3, 12: 5}
+let monthChart = { 1: 0, 2: 3, 3: 3, 4: 6, 5: 1, 6: 4, 7: 6, 8: 2, 9: 5, 10: 0, 11: 3, 12: 5 }
 let daysInMonth = { 1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31 }
+let globalStartDay;
+let globalStartMonth;
+let globalYear;
+let globalEndDay;
+let globalEndMonth;
+
 
 app.get("/calendar", (req, res) => {
     let startDate = req.query.start;
@@ -48,7 +58,7 @@ app.get("/calendar", (req, res) => {
         else if (startYear !== endYear) {
             throw new Error("Invalid Date. Year must be the same.");
         }
-        else if (startMonth > endMonth || (endMonth === startMonth && startDay > endDay)){
+        else if (startMonth > endMonth || (endMonth === startMonth && startDay > endDay)) {
             throw new Error("Invalid Date. End date should come after start date.");
         }
         else if (startDay > daysInMonth[startMonth] || endDay > daysInMonth[endMonth]) {
@@ -67,9 +77,16 @@ app.get("/calendar", (req, res) => {
         }
     } catch (error) {
         res.statusCode = 400;
-        res.json({"error": error.message});
+        res.json({ "error": error.message });
         return
     }
+    //declare global start/end dates
+    globalStartDay = startDay;
+    globalStartMonth = startMonth;
+    globalEndDay = endDay;
+    globalEndMonth = endMonth;
+    globalYear = startYear;
+    
     //calculates the day of the week of the start of the vacation and the first day of the month so that the calendar is accurate
     let startDayOfTheWeek = (startDay + monthChart[startMonth] + startYearCode + startDecade + Math.floor(startDecade / 4)) % 7
     let firstDayStarter = (1 + startYearCode + startDecade + Math.floor(startDecade / 4));// + monthChart[month] in client
@@ -84,19 +101,21 @@ app.get("/calendar", (req, res) => {
     }
 
     res.statusCode = 200;
-    res.json({"weekDay": startDayOfTheWeek,
-    "firstWeekDayOfMonth": firstWeekDayOfMonth,
-    "start": {
-        "month": startMonth,
-        "day": startDay,
-    },
-    "end": {
-        "month": endMonth,
-        "day": endDay,
-    },
-    "year": startYear,
-    "leapYear": leapYear,
-    "firstDayStarter": firstDayStarter});
+    res.json({
+        "weekDay": startDayOfTheWeek,
+        "firstWeekDayOfMonth": firstWeekDayOfMonth,
+        "start": {
+            "month": startMonth,
+            "day": startDay,
+        },
+        "end": {
+            "month": endMonth,
+            "day": endDay,
+        },
+        "year": startYear,
+        "leapYear": leapYear,
+        "firstDayStarter": firstDayStarter
+    });
 });
 
 let tokenStorage = {};
@@ -260,3 +279,214 @@ function getYearCode(startYear) {
     }
     return yearCode;
 }
+
+/* DUMMY HOTEL DATA to avoid using up API
+let response1 = {
+    q: 'philadelphia',
+    rid: '0dea07df854f4aeaba3a8b137af7819e',
+    rc: 'OK',
+    sr: [
+        {
+            '@type': 'gaiaRegionResult',
+            index: '0',
+            gaiaId: '2786',
+            type: 'CITY',
+            regionNames: [Object],
+            essId: [Object],
+            coordinates: [Object],
+            hierarchyInfo: [Object]
+        },
+        {
+            '@type': 'gaiaRegionResult',
+            index: '1',
+            gaiaId: '6057646',
+            type: 'NEIGHBORHOOD',
+            regionNames: [Object],
+            essId: [Object],
+            coordinates: [Object],
+            hierarchyInfo: [Object]
+        },
+        {
+            '@type': 'gaiaHotelResult',
+            index: '2',
+            hotelId: '19329',
+            type: 'HOTEL',
+            regionNames: [Object],
+            essId: [Object],
+            coordinates: [Object],
+            hierarchyInfo: [Object],
+            cityId: '2786',
+            hotelAddress: [Object]
+        },
+        {
+            '@type': 'gaiaRegionResult',
+            index: '3',
+            gaiaId: '4999248',
+            type: 'AIRPORT',
+            regionNames: [Object],
+            essId: [Object],
+            coordinates: [Object],
+            hierarchyInfo: [Object],
+            isMinorAirport: 'false'
+        },
+        {
+            '@type': 'gaiaHotelResult',
+            index: '4',
+            hotelId: '9654',
+            type: 'HOTEL',
+            regionNames: [Object],
+            essId: [Object],
+            coordinates: [Object],
+            hierarchyInfo: [Object],
+            cityId: '2786',
+            hotelAddress: [Object]
+        },
+        {
+            '@type': 'gaiaRegionResult',
+            index: '5',
+            gaiaId: '10524',
+            type: 'CITY',
+            regionNames: [Object],
+            essId: [Object],
+            coordinates: [Object],
+            hierarchyInfo: [Object]
+        },
+        {
+            '@type': 'gaiaRegionResult',
+            index: '6',
+            gaiaId: '553248633938969380',
+            type: 'NEIGHBORHOOD',
+            regionNames: [Object],
+            essId: [Object],
+            coordinates: [Object],
+            hierarchyInfo: [Object]
+        },
+        {
+            '@type': 'gaiaRegionResult',
+            index: '7',
+            gaiaId: '502278',
+            type: 'POI',
+            regionNames: [Object],
+            essId: [Object],
+            coordinates: [Object],
+            hierarchyInfo: [Object]
+        },
+        {
+            '@type': 'gaiaRegionResult',
+            index: '8',
+            gaiaId: '553248635074842151',
+            type: 'NEIGHBORHOOD',
+            regionNames: [Object],
+            essId: [Object],
+            coordinates: [Object],
+            hierarchyInfo: [Object]
+        },
+        {
+            '@type': 'gaiaRegionResult',
+            index: '9',
+            gaiaId: '6221345',
+            type: 'NEIGHBORHOOD',
+            regionNames: [Object],
+            essId: [Object],
+            coordinates: [Object],
+            hierarchyInfo: [Object]
+        }
+    ]
+}*/
+
+app.get("/hotels", async (req, res) => {
+    let location = req.query.location;
+    let apiKey = keysFile.hotels.key;
+    if (!location) {
+        res.statusCode = 400;
+        res.send({ error: "Invalid Location" })
+        return;
+    }
+    else if (!globalYear) {
+        res.statusCode = 400;
+        res.send({ error: "Trip Dates must be selected in Calendar page" })
+        return;
+    }
+    else {
+        let options = {
+            method: 'GET',
+            url: 'https://hotels4.p.rapidapi.com/locations/v3/search',
+            params: {
+                q: location.toLowerCase(),
+                locale: 'en_US',
+                langid: '1033',
+                siteid: '300000001'
+            },
+            headers: {
+                'X-RapidAPI-Key': apiKey,
+                'X-RapidAPI-Host': 'hotels4.p.rapidapi.com'
+            }
+        }
+
+        try {
+            let response = await axios.request(options);
+            console.log(response.data);
+            let objs = response.data.sr;
+            let region = "";
+            for (let i = 0; i < objs.length; i++) {
+                if (objs[i].type == "CITY") {
+                    region = objs[i].gaiaId;
+                    options = {
+                        method: 'POST',
+                        url: 'https://hotels4.p.rapidapi.com/properties/v2/list',
+                        headers: {
+                            'content-type': 'application/json',
+                            'X-RapidAPI-Key': apiKey,
+                            'X-RapidAPI-Host': 'hotels4.p.rapidapi.com'
+                        },
+                        data: {
+                            currency: 'USD',
+                            eapid: 1,
+                            locale: 'en_US',
+                            siteId: 300000001,
+                            destination: {
+                                regionId: region
+                            },
+                            checkInDate: {
+                                day: globalStartDay,
+                                month: globalStartMonth,
+                                year: globalYear
+                            },
+                            checkOutDate: {
+                                day: globalEndDay,
+                                month: globalEndMonth,
+                                year: globalYear
+                            },
+                            rooms: [
+                                {
+                                    adults: 2,
+                                    children: []
+                                }
+                            ],
+                            resultsStartingIndex: 0,
+                            resultsSize: 200,
+                            sort: 'PRICE_LOW_TO_HIGH',
+                            filters: {
+                                price: { max: 250, min: 100 }
+                            }
+                        }
+                    };
+                    break;
+                }
+            }
+            //get details about each hotel in area
+            try {
+                console.log("REGION ID: " + region)
+                let response2 = await axios.request(options);
+                res.send(response2.data)
+            } catch (error) {
+                console.error(error);
+            }
+
+        } catch (error) {
+            console.error(error);
+            res.send(error);
+        }
+        return;
+    }
+});
