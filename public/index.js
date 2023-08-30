@@ -18,9 +18,6 @@ $('.mdc-deprecated-list-item').on('click', (evt) => {
             // TODO: Causing an error: "Identifier 'button' has already been declared"
             content.load('/calendar.html');
             break;
-        case 'destination-budget':
-            content.html('<h1>Budget</h1>');
-            break;
         // TODO: Load page $('#content').load('/my_trip.html');
     }
 });
