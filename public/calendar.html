@@ -25,25 +25,21 @@
             vertical-align: top;
         }
 
-        th,
-        td {
+        th, td {
             width: 150px;
         }
 
         .withinDates {
-            background-color: lightblue;
-            /*Color of trip days on calendar. TODO: pull style.css*/
+            background-color: #ECE0FD;
         }
 
-        h1 {
+        #eventInfo {
             text-align: center;
             font-family: Tahoma, Arial, sans-serif;
-            color: #a006d8;
-            margin: 80px 0;
         }
 
         .withinDates:hover {
-            background: #0642d8;
+            background: #8f51e8;
         }
 
         .overlay {
@@ -68,9 +64,10 @@
             padding: 20px;
             background: #fff;
             border-radius: 5px;
-            width: 98%;
-            top: 40%;
-            height: 60%;
+            width: 58%;
+            top: 20%;
+            height: 50%;
+            left: 8%;
             position: relative;
             transition: all 1s ease-in-out;
         }
@@ -104,13 +101,82 @@
                 width: 70%;
             }
         }
+
+        #main {
+            position: absolute;
+            top: 25%;
+            left: 25%;
+        }
+
+        #startBox {
+            width: 360px;
+            height: 85px;
+            position: absolute;
+            top: 12%;
+            left: 30%;
+            background-color: #ECE0FD;
+            border-radius: 25px;
+        }
+
+        #endBox {
+            width: 360px;
+            height: 85px;
+            position: absolute;
+            top: 12%;
+            left: 55%;
+            background-color: #ECE0FD;
+            border-radius: 25px;
+        }
+
+        #send {
+            position: absolute;
+            top: 13.5%;
+            left: 80%;
+            background-color: #8f51e8;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 10px;
+        }
+
+        #title {
+            margin-left: 30%;
+        }
+
+        label {
+            margin-top: 80%;
+            margin-left: 40%;
+            font-family: Arial, sans-serif;
+        }
+
+        input {
+            margin-left: 15%;
+            margin-top: 2%;
+            width: 70%;
+            padding: 12px 20px;
+            box-sizing: border-box;
+        }
+
+        #errorMessage {
+            position: absolute;
+            top: 25%;
+            left: 45%;
+            font-family: Arial, sans-serif;
+        }
     </style>
 </head>
 
 <body>
-    <div>
+    <h1 id="title">Calendar</h1>
+    <div id="startBox">
         <label for="startDate">Start Date:</label>
         <input id="startDate" type="text" placeholder="MM/DD/YYYY" />
+    </div>
+    <div id="endBox">
         <label for="endDate">End Date:</label>
         <input id="endDate" type="text" placeholder="MM/DD/YYYY" />
     </div>
@@ -118,7 +184,7 @@
     <button id="send">Enter</button>
     <div id="errorMessage"></div>
 
-    <div>
+    <div id="main">
         <h3 id="tableHeader" style="text-align: center"></h3>
         <table id="table">
             <tbody id="calendar"></tbody>
@@ -128,7 +194,7 @@
             <div class="popup">
                 <a class="close" href="#">&times;</a>
                 <div class="content">
-                    Enter event data here
+                    <h3 id="eventInfo">No Events Planned Yet.</h3>
                 </div>
             </div>
         </div>
