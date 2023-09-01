@@ -20,7 +20,7 @@
         }
 
         .hotelPrices {
-            font-size: 15px;
+            font-size: 17px;
         }
 
         p {
@@ -38,21 +38,83 @@
             margin-top: auto;
             margin-bottom: auto;
         }
+
+        #infoBox {
+            width: 360px;
+            height: 85px;
+            position: absolute;
+            top: 12%;
+            left: 40%;
+            background-color: #ECE0FD;
+            border-radius: 25px;
+        }
+
+        #locationBox {
+            margin-left: 15%;
+            margin-top: 2%;
+            width: 70%;
+            padding: 12px 20px;
+            box-sizing: border-box;
+        }
+
+        label {
+            margin-top: 80%;
+            margin-left: 40%;
+            font-family: Arial, sans-serif;
+        }
+
+        #title {
+            margin-left: 40%;
+        }
+
+        #enter {
+            position: absolute;
+            top: 14%;
+            left: 67%;
+            background-color: #8f51e8;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 10px;
+        }
+
+        #errorMessage {
+            position: absolute;
+            top: 25%;
+            left: 49%;
+            font-family: Arial, sans-serif;
+        }
+
+        #hotelBox {
+            position: absolute;
+            top: 30%;
+            left: 25%;
+        }
+
+        .deleteDiv {
+            margin: 5px;
+            border-radius: 10px;
+            text-align: center;
+            background-color: #ECE0FD; 
+        }
     </style>
 </head>
 
 <body>
-    <div>
+    <h1 id="title">Hotels</h1>
+    <div id="infoBox">
         <label for="locationBox">Trip Location:</label>
         <input id="locationBox" type="text" placeholder="Philadelphia" />
-        <button id="enter">Enter</button>
     </div>
+    <button id="enter">Enter</button>
 
     <div id="errorMessage"></div>
 
-    <br />
     <div id="hotelBox" style="overflow:hidden"></div>
-    <br />
 
     <script>
         var locationBox = document.getElementById("locationBox");
@@ -84,7 +146,7 @@
                     for (let i = 0; i < n; i++) {
                         let div = document.createElement('div');
                         let imgBox = document.createElement('div')
-                        let hotelName = document.createElement('p')
+                        let hotelName = document.createElement('h2')
                         hotelName.setAttribute("class", "hotelNames")
                         let hotelPrice = document.createElement('p')
                         hotelPrice.setAttribute("class", "hotelPrices")
