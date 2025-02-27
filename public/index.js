@@ -21,8 +21,3 @@ $('.mdc-deprecated-list-item').on('click', (evt) => {
         // TODO: Load page $('#content').load('/my_trip.html');
     }
 });
-
-// TODO: Could use drawer listener or below to load page
-// $(window).on('hashchange', (e) => {
-//     console.log(`Location: ${e.target.location.hash.split('/')[1]}`);
-// });
